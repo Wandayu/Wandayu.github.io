@@ -1,0 +1,128 @@
+<!--
+ * @Author: Wandayu 903298500@qq.com
+ * @Date: 2023-09-13 10:56:13
+ * @LastEditors: Wandayu 903298500@qq.com
+ * @LastEditTime: 2023-11-16 10:23:57
+ * @FilePath: \AR_Museum_Demo2\aFrameTest_svgTransition.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>A-Frame框架实验-svg元素动态渲染</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script>
+      let animationCompleted = true;
+      AFRAME.registerComponent("update-svg", {
+        tick: function () {
+          if (!animationCompleted) {
+            console.log("@updateMaterial!");
+
+            const primitive = document.querySelector("#html-entity");
+            console.log(primitive.getAttribute("material").opacity);
+            const currentOpacity =
+              primitive.getAttribute("material").opacity == 1 ? 0.99 : 1;
+            primitive.setAttribute("material", "opacity", currentOpacity);
+          }
+        },
+      });
+    </script>
+  </head>
+
+  <body>
+    <!-- <script type="module" src="/main.js"></script> -->
+    <!-- data-html2canvas-ignore="true" -->
+    <a-scene id="scene" data-html2canvas-ignore="true" update-svg>
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder
+        position="1 0.75 -3"
+        radius="0.5"
+        height="1.5"
+        color="#FFC65D"
+      ></a-cylinder>
+      <a-plane
+        position="0 0 -4"
+        rotation="-90 0 0"
+        width="4"
+        height="4"
+        color="#7BC8A4"
+      ></a-plane>
+      <a-entity
+        id="html-entity"
+        geometry="primitive: plane; width: 2; height: 2"
+        material="shader: html; target: #html-element; transparent:true; opacity: 1; ratio: height; fps: 60; side: double"
+        position="0 4.4 -6.4"
+      ></a-entity>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+
+    <div style="width: 240px; height: 240px; position: fixed; left: 0; top: 0">
+      <div id="html-element" style="background: transparent">
+        <svg id="svg"></svg>
+      </div>
+    </div>
+  </body>
+  <script>
+    const svg = d3.select("#svg").attr("width", 240).attr("height", 240);
+    // const primitive = document.querySelector("#htmlEntity");
+    //console.log(primitive.getAttribute("material"));
+    // 手动控制primitive的材质更新;
+    // const interval = setInterval(() => {
+    //   primitive.components.material.update(
+    //     "shader: html; target: #htmlElement; transparent:true; ratio: height; fps: 0;"
+    //   );
+    // }, 1000 / 60);
+
+    //console.log(primitive.components.material);
+    // function updateMaterial() {
+    //   console.log("@updateMaterial!");
+    //   // 更新材质属性
+    //   primitive.components.material.update(
+    //     "shader: html; target: #htmlElement; transparent:true; ratio: height; fps: 0;"
+    //   );
+    //   // 继续请求下一个动画帧
+    //   if (!animationCompleted) {
+    //     requestAnimationFrame(updateMaterial);
+    //   }
+    // }
+
+    // 启动动画帧更新循环
+    setTimeout(() => {
+      animationCompleted = false;
+      //requestAnimationFrame(updateMaterial);
+      const line = svg
+        .append("path")
+        .attr("d", "M 40 200 L 100 120 L 240 120")
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+        .attr("stroke-dasharray", function () {
+          return `${this.getTotalLength()} ${this.getTotalLength()}`;
+        })
+        .attr("stroke-dashoffset", function () {
+          return this.getTotalLength();
+        })
+        .transition()
+        .duration(2000)
+        .attr("stroke-dashoffset", 0)
+        .on("end", () => {
+          //clearInterval(interval);
+          animationCompleted = true;
+          const primitive = document.querySelector("#html-entity");
+          //primitive.setAttribute("material", "opacity", 1);
+          primitive.components.material.update(
+            "shader: html; target: #html-element; transparent:true; opacity:1; ratio: height; fps: 0; side: double"
+          );
+          //requestAnimationFrame(updateMaterial);
+        });
+    }, 0);
+  </script>
+</html>

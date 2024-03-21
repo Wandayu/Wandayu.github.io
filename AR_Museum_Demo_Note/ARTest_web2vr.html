@@ -1,0 +1,221 @@
+<!--
+ * @Author: Wandayu 903298500@qq.com
+ * @Date: 2023-09-13 10:56:13
+ * @LastEditors: Wandayu 903298500@qq.com
+ * @LastEditTime: 2023-11-20 17:05:14
+ * @FilePath: \AR_Museum_Demo2\ARTest_web2vr.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ARjs-svg元素渲染-web2vr库</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="./lib/web2vr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  </head>
+
+  <body>
+    <div style="position: fixed; top: 0; left: 0; z-index: 1">
+      <svg id="svg-1"></svg>
+    </div>
+
+    <div style="position: absolute; top: 0; left: 0; z-index: 1">
+      <svg id="svg-2"></svg>
+    </div>
+
+    <a-scene
+      id="ar-scene"
+      vr-mode-ui="enabled: false;"
+      renderer="antialias: true; logarithmicDepthBuffer: true"
+      embedded
+      arjs="sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1920; displayHeight: 1080;"
+    >
+      <!-- Marker -->
+      <a-marker id="marker" preset="hiro">
+        <!-- 模型根节点 -->
+        <a-entity id="root" position="0 0 0" scale="1 1 1">
+          <a-box position="0 0 0" rotation="0 0 0" color="#4CC3D9"></a-box>
+        </a-entity>
+      </a-marker>
+
+      <!-- AR相机 -->
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      const svgSize = [120, 200];
+      const arrowLength = 200;
+      const arrowWidth = 10;
+
+      const path_1 = `
+               M ${svgSize[0] / 2 - arrowWidth} ${svgSize[1] - arrowWidth}
+               l ${arrowWidth} ${arrowWidth}
+               l ${arrowWidth} -${arrowWidth}
+               M ${svgSize[0] / 2} ${svgSize[1]}
+               l 0 -${arrowLength}
+               M ${svgSize[0] / 2 - arrowWidth} ${arrowWidth}
+               l ${arrowWidth} -${arrowWidth}
+               l ${arrowWidth} ${arrowWidth}`;
+
+      const path_2 = `
+               M ${arrowWidth} ${svgSize[0] / 2 - arrowWidth}
+               l ${-arrowWidth} ${arrowWidth}
+               l ${arrowWidth} ${arrowWidth}
+               M ${0} ${svgSize[0] / 2}
+               l ${arrowLength} 0
+               M ${svgSize[1] - arrowWidth} ${svgSize[0] / 2 - arrowWidth}
+               l ${arrowWidth} ${arrowWidth}
+               l -${arrowWidth} ${arrowWidth}`;
+
+      const initSVG_1 = function () {
+        const svg = d3
+          .select("#svg-1")
+          .attr("width", svgSize[0])
+          .attr("height", svgSize[1]);
+
+        const text = svg
+          .append("text")
+          .attr("text-anchor", "end")
+          .attr("x", svgSize[0] / 2 - 10)
+          .attr("y", svgSize[1] / 2)
+          .attr("font-size", 10)
+          .attr("font-weight", 700)
+          .attr("fill", "#fff")
+          .text("");
+
+        const path = svg
+          .append("path")
+          .attr("d", path_1)
+          .attr("stroke", "#fff")
+          .attr("stroke-width", 4)
+          .attr("fill", "none")
+          .attr("stroke-dasharray", function () {
+            return `${this.getTotalLength()} ${this.getTotalLength()}`;
+          })
+          .attr("stroke-dashoffset", function () {
+            return this.getTotalLength();
+          });
+
+        return { svg, text, path };
+      };
+
+      const initSVG_2 = function () {
+        const svg = d3
+          .select("#svg-2")
+          .attr("width", svgSize[1])
+          .attr("height", svgSize[0]);
+
+        const text = svg
+          .append("text")
+          .attr("dominant-baseline", "hanging")
+          .attr("text-anchor", "middle")
+          .attr("x", svgSize[1] / 2)
+          .attr("y", svgSize[0] / 2 + 10)
+          .attr("font-size", 10)
+          .attr("font-weight", 700)
+          .attr("fill", "#fff")
+          .text("");
+
+        const path = svg
+          .append("path")
+          .attr("d", path_2)
+          .attr("stroke", "#fff")
+          .attr("stroke-width", 4)
+          .attr("fill", "none")
+          .attr("stroke-dasharray", function () {
+            return `${this.getTotalLength()} ${this.getTotalLength()}`;
+          })
+          .attr("stroke-dashoffset", function () {
+            return this.getTotalLength();
+          });
+
+        return { svg, text, path };
+      };
+
+      const svg_1_el = initSVG_1();
+      const svg_2_el = initSVG_2();
+
+      const web2vr_1 = new Web2VR("#svg-1", {
+        id: "svg_1",
+        parentSelector: "#root",
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+        position: { x: -1, y: 0.5, z: -0.1 },
+        scale: 200,
+      });
+      const web2vr_2 = new Web2VR("#svg-2", {
+        id: "svg_2",
+        parentSelector: "#root",
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+        position: { x: 0, y: -0.4, z: 0.45 },
+        rotation: { x: -90, y: 0, z: 0 },
+        scale: 200,
+      });
+
+      web2vr_1.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+      web2vr_2.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+      web2vr_1.start();
+      web2vr_2.start();
+
+      document.getElementById("marker").addEventListener("markerFound", () => {
+        console.log("markerFound!");
+        setTimeout(async () => {
+          await svg_1_el.path
+            .transition()
+            .duration(1200)
+            .attr("stroke-dashoffset", 0)
+            .end();
+          await svg_1_el.text
+            .text("1m")
+            .transition()
+            .duration(400)
+            .attr("font-size", 20)
+            .end();
+
+          await svg_2_el.path
+            .transition()
+            .duration(1200)
+            .attr("stroke-dashoffset", 0)
+            .end();
+          svg_2_el.text
+            .text("1m")
+            .transition()
+            .duration(400)
+            .attr("font-size", 20);
+        }, 1000);
+      });
+
+      document.getElementById("marker").addEventListener("markerLost", () => {
+        console.log("markerLost!");
+      });
+    </script>
+  </body>
+</html>

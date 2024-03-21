@@ -1,0 +1,330 @@
+<!--
+ * @Author: Wandayu 903298500@qq.com
+ * @Date: 2023-09-13 10:56:13
+ * @LastEditors: Wandayu 903298500@qq.com
+ * @LastEditTime: 2024-03-21 11:56:25
+ * @FilePath: \AR_Museum_Demo_Note\index.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AR可视化</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="./lib/web2vr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  </head>
+
+  <body style="margin: 0px; overflow: hidden">
+    <a-scene
+      id="ar-scene"
+      vr-mode-ui="enabled: false;"
+      renderer="antialias: true; logarithmicDepthBuffer: true"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1920; displayHeight: 1080;"
+    >
+      <!-- Marker -->
+      <a-marker id="marker" preset="hiro">
+        <!--  模拟物体 -->
+        <a-box
+          visible="false"
+          position="0 1.2 -1"
+          width="0.6"
+          depth="0.6"
+          height="2.4"
+          color="#FFC65D"
+          material="opacity: 0.5; transparent: true;"
+        ></a-box>
+        <!-- 模型根节点 -->
+        <a-entity id="root" position="0 0 -1" scale="1 1 1"> </a-entity>
+      </a-marker>
+
+      <!-- AR相机 -->
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script src="./svgElements/svg.js"></script>
+    <script src="./svgElements/height.js"></script>
+    <script src="./svgElements/perimeter.js"></script>
+    <script src="./svgElements/infos.js"></script>
+    <script src="./svgElements/pie.js"></script>
+    <script src="./svgElements/area.js"></script>
+    <script>
+      const body = d3.select("body");
+
+      const debugMode = false;
+      // 绘制高度svg
+      const svg_height = drawSvg(body, "height", debugMode).svg;
+      const svg_height_el = drawHeight(svg_height, [120, 500], 10);
+      // 初始化高度svg的web2vr
+      const web2vr_height = new Web2VR("#height", {
+        id: "height",
+        parentSelector: "#root",
+        position: { x: -0.66, y: 2.5, z: -0.6 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+      web2vr_height.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+
+      // 绘制周长svg
+      const svg_perimeter = drawSvg(body, "perimeter", debugMode).svg;
+      const svg_perimeter_el = drawPerimeter(svg_perimeter, [140, 140], 60, 10);
+      // 初始化周长svg的web2vr
+      const web2vr_perimeter = new Web2VR("#perimeter", {
+        id: "perimeter",
+        parentSelector: "#root",
+        position: { x: -0.3, y: 0.1, z: 0.3 },
+        rotation: { x: -90, y: 0, z: 0 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+      web2vr_perimeter.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+
+      // 绘制信息svg
+      const svg_infos = drawSvg(body, "infos", debugMode).svg;
+      const svg_infos_el = drawInfos(
+        svg_infos,
+        [240, 180],
+        [
+          [220, 36],
+          [180, 36],
+          [160, 36],
+          [170, 36],
+        ],
+        12
+      );
+      // 初始化信息svg的web2vr
+      const web2vr_infos = new Web2VR("#infos", {
+        id: "infos",
+        parentSelector: "#root",
+        position: { x: -1.6, y: 1.12, z: 0.13 },
+        rotation: { x: 0, y: 10, z: 0 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+      web2vr_infos.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+
+      // 绘制饼图svg
+      const svg_pie = drawSvg(body, "pie", debugMode).svg;
+      const svg_pie_el = drawPie(svg_pie, [260, 260], 100, [
+        { name: "鲜梨", value: 90 },
+        { name: "白砂糖", value: 10 },
+      ]);
+      // 初始化饼图svg的web2vr
+      const web2vr_pie = new Web2VR("#pie", {
+        id: "pie",
+        parentSelector: "#root",
+        position: { x: 0.48, y: 2.6, z: -0.05 },
+        rotation: { x: 0, y: -10, z: 0 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+      web2vr_pie.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+
+      // 绘制面积svg
+      const svg_area = drawSvg(body, "area", debugMode).svg;
+      const svg_area_el = drawArea(
+        svg_area,
+        [260, 260],
+        [
+          { date: new Date("2023-3-1"), value: 20 },
+          { date: new Date("2023-4-1"), value: 12 },
+          { date: new Date("2023-5-1"), value: 8 },
+          { date: new Date("2023-6-1"), value: 16 },
+          { date: new Date("2023-7-1"), value: 24 },
+          { date: new Date("2023-8-1"), value: 32 },
+          { date: new Date("2023-9-1"), value: 30 },
+          { date: new Date("2023-10-1"), value: 40 },
+          { date: new Date("2023-11-1"), value: 42 },
+        ]
+      );
+      // 初始化面积svg的web2vr
+      const web2vr_area = new Web2VR("#area", {
+        id: "area",
+        parentSelector: "#root",
+        position: { x: 0.48, y: 1.27, z: -0.05 },
+        rotation: { x: 0, y: -10, z: 0 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+      web2vr_area.aframe.scene.addEventListener(
+        "loaded",
+        () => {
+          for (const element of document.querySelectorAll("a-scene *[text]")) {
+            if (element.hasLoaded)
+              element.components.text.material.depthTest = 0;
+          }
+        },
+        { once: true }
+      );
+
+      web2vr_height.start();
+      web2vr_perimeter.start();
+      web2vr_infos.start();
+      web2vr_pie.start();
+      web2vr_area.start();
+
+      const play = function () {
+        // 开始播放动效
+        setTimeout(async () => {
+          await svg_height_el.path
+            .transition()
+            .duration(800)
+            .attr("stroke-dashoffset", 0)
+            .end();
+          await svg_height_el.text
+            .text("15cm")
+            .transition()
+            .duration(400)
+            .attr("font-size", 16)
+            .end();
+
+          await svg_perimeter_el.path
+            .transition()
+            .duration(800)
+            .attr("stroke-dashoffset", 0)
+            .end();
+          await svg_perimeter_el.text
+            .text("10cm")
+            .transition()
+            .duration(400)
+            .attr("font-size", 16)
+            .end();
+
+          d3.select(svg_infos_el.texts[0])
+            .text("商品名称：九只小梨")
+            .transition()
+            .duration(400)
+            .attr("font-size", 20);
+          await d3
+            .select(svg_infos_el.rects[0])
+            .transition()
+            .duration(400)
+            .attr("x", (d) => 240 - d[0])
+            .attr("width", (d) => d[0])
+            .end();
+
+          d3.select(svg_infos_el.texts[1])
+            .text("生产厂家：金豆芽")
+            .transition()
+            .duration(500)
+            .attr("font-size", 20);
+          await d3
+            .select(svg_infos_el.rects[1])
+            .transition()
+            .duration(500)
+            .attr("x", (d) => 240 - d[0])
+            .attr("width", (d) => d[0])
+            .end();
+
+          d3.select(svg_infos_el.texts[2])
+            .text("零售价：13元")
+            .transition()
+            .duration(500)
+            .attr("font-size", 20);
+          await d3
+            .select(svg_infos_el.rects[2])
+            .transition()
+            .duration(500)
+            .attr("x", (d) => 240 - d[0])
+            .attr("width", (d) => d[0])
+            .end();
+
+          d3.select(svg_infos_el.texts[3])
+            .text("净含量：160g")
+            .transition()
+            .duration(500)
+            .attr("font-size", 20);
+          await d3
+            .select(svg_infos_el.rects[3])
+            .transition()
+            .duration(500)
+            .attr("x", (d) => 240 - d[0])
+            .attr("width", (d) => d[0])
+            .end();
+
+          svg_pie_el.title
+            .text("配料表")
+            .transition()
+            .duration(400)
+            .attr("font-size", 24);
+          await playPie(svg_pie, [260, 260], svg_pie_el.pieGenerator);
+
+          svg_area_el.title
+            .text("销售量(K)")
+            .transition()
+            .duration(400)
+            .attr("font-size", 24);
+          playArea(svg_area, [260, 260]);
+        }, 500);
+      };
+
+      if (debugMode) {
+        play();
+      }
+
+      document.getElementById("marker").addEventListener("markerFound", () => {
+        console.log("markerFound!");
+        if (!debugMode) {
+          play();
+        }
+      });
+
+      document.getElementById("marker").addEventListener("markerLost", () => {
+        console.log("markerLost!");
+      });
+    </script>
+  </body>
+</html>

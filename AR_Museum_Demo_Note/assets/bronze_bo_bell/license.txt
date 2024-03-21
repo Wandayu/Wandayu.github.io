@@ -1,0 +1,11 @@
+Model Information:
+* title:	Bronze Bo Bell
+* source:	https://sketchfab.com/3d-models/bronze-bo-bell-fc83df984c3848d98138fd52fc368bc7
+* author:	artfletch (https://sketchfab.com/artfletch)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bronze Bo Bell" (https://sketchfab.com/3d-models/bronze-bo-bell-fc83df984c3848d98138fd52fc368bc7) by artfletch (https://sketchfab.com/artfletch) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

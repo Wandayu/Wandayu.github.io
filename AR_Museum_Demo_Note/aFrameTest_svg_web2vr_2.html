@@ -1,0 +1,210 @@
+<!--
+ * @Author: Wandayu 903298500@qq.com
+ * @Date: 2023-09-13 10:56:13
+ * @LastEditors: Wandayu 903298500@qq.com
+ * @LastEditTime: 2023-11-20 16:36:26
+ * @FilePath: \AR_Museum_Demo2\aFrameTest_svg_web2vr_2.html
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>A-Frame框架实验-svg元素渲染-web2vr库</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/web2vr@1.1.1/dist/web2vr.min.js"></script> -->
+    <script src="./lib/web2vr.js"></script>
+    <script src="../embedScene.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  </head>
+
+  <body>
+    <div style="position: absolute; top: 0; left: 0; z-index: 1">
+      <svg id="svg-1"></svg>
+    </div>
+
+    <div style="position: absolute; top: 0; left: 0; z-index: 1">
+      <svg id="svg-2"></svg>
+    </div>
+
+    <div id="aframe-container">
+      <a-scene embedded id="aframe-scene">
+        <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+        <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder
+          position="1 0.75 -3"
+          radius="0.5"
+          height="1.5"
+          color="#FFC65D"
+        ></a-cylinder>
+        <a-plane
+          position="0 0 -4"
+          rotation="-90 0 0"
+          width="4"
+          height="4"
+          color="#7BC8A4"
+        ></a-plane>
+        <a-sky color="#ECECEC"></a-sky>
+        <a-entity
+          camera
+          look-controls
+          wasd-controls
+          position="0 1.9 0"
+        ></a-entity>
+      </a-scene>
+    </div>
+    <script>
+      const svg_1 = d3.select("#svg-1").attr("width", 120).attr("height", 300);
+      const svg_2 = d3.select("#svg-2").attr("width", 210).attr("height", 130);
+
+      //window.addEventListener("load", () => {});
+
+      // web2vr_1.aframe.scene.addEventListener(
+      //   "loaded",
+      //   () => {
+      //     for (const element of document.querySelectorAll("a-scene *[text]")) {
+      //       if (element.hasLoaded)
+      //         element.components.text.material.depthTest = 0;
+      //     }
+      //   },
+      //   { once: true }
+      // );
+
+      //console.log(web2vr_1, web2vr_2);
+      const svgSize = [120, 300];
+      const arrowLength = 300;
+      const arrowWidth = 10;
+
+      const initSVG_1 = function () {
+        const text = svg_1
+          .append("text")
+          .attr("text-anchor", "end")
+          .attr("x", svgSize[0] / 2 - 10)
+          .attr("y", svgSize[1] / 2)
+          .attr("font-size", 10)
+          .attr("font-weight", 700)
+          .attr("fill", "#333")
+          .text("");
+
+        const path = svg_1
+          .append("path")
+          .attr(
+            "d",
+            `M ${svgSize[0] / 2 - arrowWidth} ${svgSize[1] - arrowWidth}
+               l ${arrowWidth} ${arrowWidth}
+               l ${arrowWidth} -${arrowWidth}
+               M ${svgSize[0] / 2} ${svgSize[1]}
+               l 0 -${arrowLength}
+               M ${svgSize[0] / 2 - arrowWidth} ${arrowWidth}
+               l ${arrowWidth} -${arrowWidth}
+               l ${arrowWidth} ${arrowWidth}`
+          )
+          .attr("stroke", "#333")
+          .attr("stroke-opacity", 0.8)
+          .attr("stroke-width", 3)
+          .attr("fill", "none")
+          .attr("stroke-dasharray", function () {
+            return `${this.getTotalLength()} ${this.getTotalLength()}`;
+          })
+          .attr("stroke-dashoffset", function () {
+            return this.getTotalLength();
+          });
+
+        return { text, path };
+      };
+
+      const initSVG_2 = function () {
+        const text = svg_2
+          .append("g")
+          .attr("transform", `translate(100, 110)`)
+          .append("text")
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "hanging")
+          .attr("font-size", 10)
+          .attr("font-weight", 700)
+          .attr("fill", "#333")
+          .text("");
+
+        const path = svg_2
+          .append("path")
+          .attr(
+            "d",
+            `M 0,0 A 100,100 0 0 0 200,0
+             m -${arrowWidth} ${arrowWidth}
+             l ${arrowWidth} -${arrowWidth}
+             l ${arrowWidth} ${arrowWidth}`
+          )
+          .attr("stroke", "#333")
+          .attr("stroke-opacity", 0.8)
+          .attr("stroke-width", 3)
+          .attr("fill", "none")
+          .attr("stroke-dasharray", function () {
+            return `${this.getTotalLength()} ${this.getTotalLength()}`;
+          })
+          .attr("stroke-dashoffset", function () {
+            return this.getTotalLength();
+          });
+
+        return { text, path };
+      };
+
+      const svg_1_el = initSVG_1();
+      const svg_2_el = initSVG_2();
+
+      const web2vr_1 = new Web2VR(document.getElementById("svg-1"), {
+        id: "svg_1",
+        parentSelector: "#aframe-scene",
+        position: { x: 0.05, y: 1.5, z: -3 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+
+      const web2vr_2 = new Web2VR(document.getElementById("svg-2"), {
+        id: "svg_2",
+        parentSelector: "#aframe-scene",
+        position: { x: 0.5, y: 0.01, z: -2.7 },
+        rotation: { x: -90, y: 0, z: 0 },
+        scale: 200,
+        scroll: false,
+        skybox: false,
+        createControllers: false,
+      });
+
+      web2vr_1.start();
+      web2vr_2.start();
+      setTimeout(async () => {
+        await svg_1_el.path
+          .transition()
+          .duration(1000)
+          .attr("stroke-dashoffset", 0)
+          .end();
+
+        await svg_1_el.text
+          .text("1.5m")
+          .transition()
+          .duration(500)
+          .attr("font-size", 20)
+          .end();
+
+        await svg_2_el.path
+          .transition()
+          .duration(800)
+          .attr("stroke-dashoffset", 0)
+          .end();
+
+        await svg_2_el.text
+          .text("3.14m")
+          .transition()
+          .duration(500)
+          .attr("font-size", 20)
+          .end();
+      }, 2000);
+    </script>
+  </body>
+</html>

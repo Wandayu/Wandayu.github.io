@@ -1,0 +1,168 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 4.26.0 glTF Exporter 1.0.6"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 6,
+			"type": "SCALAR",
+			"componentType": 5121
+		},
+		{
+			"bufferView": 1,
+			"count": 4,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -2.30999994,
+				-0.555000007,
+				0
+			],
+			"max": [ 2.30999994,
+				0.555000007,
+				0
+			]
+		},
+		{
+			"bufferView": 2,
+			"count": 4,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 4,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 4,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 4,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "Dig.bin",
+			"byteLength": 232
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 6,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 48,
+			"byteOffset": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 48,
+			"byteOffset": 56,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 64,
+			"byteOffset": 104,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 32,
+			"byteOffset": 168,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 32,
+			"byteOffset": 200,
+			"target": 34962
+		}
+	],
+	"images": [
+		{
+			"uri": "Dig.png"
+		}
+	],
+	"materials": [
+		{
+			"name": "M_InfoText_Dig",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 0
+				}
+			},
+			"alphaMode": "MASK",
+			"alphaCutoff": 0.333299994,
+			"extensions":
+			{
+				"KHR_materials_unlit":
+				{
+				}
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Dig",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4,
+						"TEXCOORD_1": 5
+					},
+					"indices": 0,
+					"material": 0
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"mesh": 0
+		}
+	],
+	"samplers": [
+		{
+			"name": "Dig",
+			"minFilter": 9987,
+			"magFilter": 9729
+		}
+	],
+	"scenes": [
+		{
+			"nodes": [ 0 ]
+		}
+	],
+	"textures": [
+		{
+			"name": "Dig",
+			"sampler": 0,
+			"source": 0
+		}
+	],
+	"extensionsUsed": [
+		"KHR_materials_unlit"
+	]
+}
